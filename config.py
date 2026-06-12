@@ -10,6 +10,10 @@ POSE_SMOOTH_LANDMARKS = True
 POSE_MIN_DETECTION_CONFIDENCE = 0.5
 POSE_MIN_TRACKING_CONFIDENCE = 0.5
 
+# Squat counter thresholds
+SQUAT_DOWN_ANGLE = 90.0
+SQUAT_UP_ANGLE = 160.0
+
 # MediaPipe Pose landmark indices (official order)
 LANDMARK_INDEX = {
     "NOSE": 0,
