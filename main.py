@@ -50,17 +50,24 @@ def updateSquatCounter(angles, squatCount, squatStage):
     #keeps only the angles that are available
     validKnees = [angle for angle in (leftKnee, rightKnee) if angle is not None]
     if not validKnees: #Checks if neither knees are available
-        return squatCount, squatStage   #Returns current count and stage
+        return squatCount, squatStage, "Make knees visible"   #Returns current count and stage
 
     kneeAngle = sum(validKnees) / len(validKnees)   #Calculates the average knee angle from the available knees
+    feedback = "Go lower"
 
     if kneeAngle < SQUAT_DOWN_ANGLE:    #Check if user reached the bottom squat position > 90 degrees
         squatStage = "down" 
+        feedback = "Good depth"
     elif kneeAngle > SQUAT_UP_ANGLE and squatStage == "down":   #Checks if user returned up after being down
         squatCount += 1     #Adds 1 rep
         squatStage = "up"   #Changes the stage of the squat
+        feedback = "Good squat"
+    elif kneeAngle > SQUAT_UP_ANGLE:
+        feedback = "Start squat"
+    elif squatStage == "down":
+        feedback = "Stand up"
 
-    return squatCount, squatStage   #Returns updated count and stage
+    return squatCount, squatStage, feedback   #Returns updated count stage and feedback
 
 
 def main() -> None:
@@ -75,6 +82,7 @@ def main() -> None:
     detector = PoseDetector() #Creates a MediaPipe object
     squatCount = 0  #Stores how many squats were counted
     squatStage = "up"   #Stores the current squat stage starts with "up"
+    squatFeedback = "Start squat"
 
     try:
         while True: #Runs a camera loop infinitely
@@ -93,10 +101,11 @@ def main() -> None:
             cv2.putText(frame, "Press q to quit", (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2) #Quit instructions
 
             angles = computeAngles(landmarks) #Calculates joint angles
-            squatCount, squatStage = updateSquatCounter(angles, squatCount, squatStage) #Updates squat count based on knee angles
+            squatCount, squatStage, squatFeedback = updateSquatCounter(angles, squatCount, squatStage) #Updates squat count based on knee angles
             drawAngles(frame, angles) #Draws the angles panel on top right
             cv2.putText(frame, f"Squats: {squatCount}", (20, 125), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 255), 2)
             cv2.putText(frame, f"Stage: {squatStage}", (20, 165), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
+            cv2.putText(frame, f"Feedback: {squatFeedback}", (20, 205), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
 
             cv2.imshow(WINDOW_NAME, frame) #
 
