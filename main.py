@@ -75,15 +75,20 @@ def main() -> None:
             status_text = "Person detected" if landmarks else "No person detected" #Chooses status text
             cv2.putText(frame, status_text, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)    #Draws the status text on the screen
             cv2.putText(frame, "Press q to quit", (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2) #Quit instructions
-            cv2.putText(frame, "1 Squat | 2 Biceps Curl", (20, 245), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2) #Shows the available exercises
+            cv2.putText(frame, "1 Squat | 2 Biceps Curl", (20, 285), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2) #Shows the available exercises
 
             angles = computeAngles(landmarks) #Calculates joint angles
             currentExercise.update(angles)    #Updates the currently selected exercise using calculated joint angles
             drawAngles(frame, angles) #Draws the angles panel on top right
             cv2.putText(frame, f"Exercise: {currentExercise.name}", (20, 125), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 255), 2)
-            cv2.putText(frame, f"Reps: {currentExercise.count}", (20, 165), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 255), 2)
-            cv2.putText(frame, f"Stage: {currentExercise.stage}", (20, 205), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
-            cv2.putText(frame, f"Feedback: {currentExercise.feedback}", (20, 285), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 255), 2)
+            if currentExercise.name == "Biceps Curl":
+                cv2.putText(frame, f"Left reps: {currentExercise.leftCount} | Right reps: {currentExercise.rightCount}", (20, 165), cv2.FONT_HERSHEY_SIMPLEX, 0.85, (0, 255, 255), 2)
+                cv2.putText(frame, f"Stage: {currentExercise.stage}", (20, 205), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 255), 2)
+                cv2.putText(frame, f"Feedback: {currentExercise.feedback}", (20, 245), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (0, 255, 255), 2)
+            else:
+                cv2.putText(frame, f"Reps: {currentExercise.count}", (20, 165), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 255), 2)
+                cv2.putText(frame, f"Stage: {currentExercise.stage}", (20, 205), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
+                cv2.putText(frame, f"Feedback: {currentExercise.feedback}", (20, 245), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 255), 2)
 
             cv2.imshow(WINDOW_NAME, frame) #
 
