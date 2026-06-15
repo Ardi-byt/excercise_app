@@ -3,6 +3,7 @@ from config import SQUAT_DOWN_ANGLE, SQUAT_UP_ANGLE
 
 class SquatExercise:
     def __init__(self):
+        self.name = "Squat"
         self.count = 0
         self.stage = "up"
         self.feedback = "Start squat"

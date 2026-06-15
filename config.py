@@ -14,6 +14,10 @@ POSE_MIN_TRACKING_CONFIDENCE = 0.5
 SQUAT_DOWN_ANGLE = 90.0
 SQUAT_UP_ANGLE = 160.0
 
+# Biceps curl counter thresholds
+BICEPS_CURLED_ANGLE = 50.0
+BICEPS_EXTENDED_ANGLE = 150.0
+
 # MediaPipe Pose landmark indices (official order)
 LANDMARK_INDEX = {
     "NOSE": 0,
