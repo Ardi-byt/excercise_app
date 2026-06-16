@@ -18,6 +18,11 @@ SQUAT_UP_ANGLE = 160.0
 BICEPS_CURLED_ANGLE = 50.0
 BICEPS_EXTENDED_ANGLE = 150.0
 
+# Push-up counter thresholds
+PUSHUP_DOWN_ANGLE = 90.0
+PUSHUP_UP_ANGLE = 160.0
+PUSHUP_BODY_STRAIGHT_ANGLE = 150.0
+
 # MediaPipe Pose landmark indices (official order)
 LANDMARK_INDEX = {
     "NOSE": 0,
@@ -105,5 +110,15 @@ ANGLE_DEFINITIONS = {
         LANDMARK_INDEX["RIGHT_KNEE"],
         LANDMARK_INDEX["RIGHT_ANKLE"],
         LANDMARK_INDEX["RIGHT_FOOT_INDEX"],
+    ),
+    "Left Body": (
+        LANDMARK_INDEX["LEFT_SHOULDER"],
+        LANDMARK_INDEX["LEFT_HIP"],
+        LANDMARK_INDEX["LEFT_ANKLE"],
+    ),
+    "Right Body": (
+        LANDMARK_INDEX["RIGHT_SHOULDER"],
+        LANDMARK_INDEX["RIGHT_HIP"],
+        LANDMARK_INDEX["RIGHT_ANKLE"],
     ),
 }

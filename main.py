@@ -8,6 +8,7 @@ from config import (
     WINDOW_NAME,
 )
 from exercises.biceps_curl import BicepsCurlExercise
+from exercises.push_up import PushUpExercise
 from exercises.squat import SquatExercise
 from pose_detector import PoseDetector
 from utils import safeAngle
@@ -56,6 +57,7 @@ def main() -> None:
     exercises = {
         "1": SquatExercise(),   #Squat exercise is set as default and can also be chosen by pressing 1
         "2": BicepsCurlExercise(),  #Key 2 selects the biceps curl exercise
+        "3": PushUpExercise(),  #Key 3 selects the push-up exercise
     }
     currentExerciseKey = "1"
     currentExercise = exercises[currentExerciseKey] #Stores the current selected exercise
@@ -75,7 +77,7 @@ def main() -> None:
             status_text = "Person detected" if landmarks else "No person detected" #Chooses status text
             cv2.putText(frame, status_text, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)    #Draws the status text on the screen
             cv2.putText(frame, "Press q to quit", (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2) #Quit instructions
-            cv2.putText(frame, "1 Squat | 2 Biceps Curl", (20, 285), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2) #Shows the available exercises
+            cv2.putText(frame, "1 Squat | 2 Biceps Curl | 3 Push-up", (20, 285), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2) #Shows the available exercises
 
             angles = computeAngles(landmarks) #Calculates joint angles
             currentExercise.update(angles)    #Updates the currently selected exercise using calculated joint angles
@@ -101,6 +103,9 @@ def main() -> None:
                 currentExercise = exercises[currentExerciseKey]
             if key == ord("2"): #Checks if 2 was pressed and stores biceps curl as the selected and current exercise
                 currentExerciseKey = "2"
+                currentExercise = exercises[currentExerciseKey]
+            if key == ord("3"): #Checks if 3 was pressed and stores push up as the selected and current exercise
+                currentExerciseKey = "3"
                 currentExercise = exercises[currentExerciseKey]
     finally: #Releases all resources
         detector.close()
