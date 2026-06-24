@@ -11,6 +11,7 @@ from exercises.biceps_curl import BicepsCurlExercise
 from exercises.push_up import PushUpExercise
 from exercises.squat import SquatExercise
 from pose_detector import PoseDetector
+from renderer import renderOverlay
 from utils import safeAngle
 
 
@@ -22,27 +23,6 @@ def computeAngles(landmarks):
             angles[label] = value
     return angles
 
-
-def drawAngles(frame, angles):
-    #Places the panel top right
-    panel_x = frame.shape[1] - 360 
-    panel_y = 10
-    panel_w = 350
-    panel_h = 28 + (len(ANGLE_DEFINITIONS) * 24)    #Height based on number of rows
-
-    cv2.rectangle(frame, (panel_x, panel_y), (panel_x + panel_w, panel_y + panel_h), (20, 20, 20), -1)  #Draws the background of the panel
-    cv2.putText(frame, "Joint Angles", (panel_x + 10, panel_y + 22), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 255), 2)    #Draws the title
-
-    y = panel_y + 46
-    for label in ANGLE_DEFINITIONS: #Draw every angle
-        #If the angle is successfully calculated formats the angle with one decimal
-        if label in angles:
-            text = f"{label}: {angles[label]:.1f}"
-        #If the angle is missing shows that its not available
-        else:
-            text = f"{label}: N/A"
-        cv2.putText(frame, text, (panel_x + 10, y), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (200, 255, 200), 1)
-        y += 24
 
 def main() -> None:
     #Opens the camera based on the camera_index and sets the width and height of the capture
@@ -74,23 +54,9 @@ def main() -> None:
 
             frame = cv2.flip(frame, 1)  #Flips the frame
 
-            status_text = "Person detected" if landmarks else "No person detected" #Chooses status text
-            cv2.putText(frame, status_text, (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)    #Draws the status text on the screen
-            cv2.putText(frame, "Press q to quit", (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2) #Quit instructions
-            cv2.putText(frame, "1 Squat | 2 Biceps Curl | 3 Push-up", (20, 285), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2) #Shows the available exercises
-
             angles = computeAngles(landmarks) #Calculates joint angles
             currentExercise.update(angles)    #Updates the currently selected exercise using calculated joint angles
-            drawAngles(frame, angles) #Draws the angles panel on top right
-            cv2.putText(frame, f"Exercise: {currentExercise.name}", (20, 125), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 255), 2)
-            if currentExercise.name == "Biceps Curl":
-                cv2.putText(frame, f"Left reps: {currentExercise.leftCount} | Right reps: {currentExercise.rightCount}", (20, 165), cv2.FONT_HERSHEY_SIMPLEX, 0.85, (0, 255, 255), 2)
-                cv2.putText(frame, f"Stage: {currentExercise.stage}", (20, 205), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 255), 2)
-                cv2.putText(frame, f"Feedback: {currentExercise.feedback}", (20, 245), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (0, 255, 255), 2)
-            else:
-                cv2.putText(frame, f"Reps: {currentExercise.count}", (20, 165), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 255), 2)
-                cv2.putText(frame, f"Stage: {currentExercise.stage}", (20, 205), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
-                cv2.putText(frame, f"Feedback: {currentExercise.feedback}", (20, 245), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 255), 2)
+            renderOverlay(frame, landmarks, angles, currentExercise) #Draws all text overlays on the frame
 
             cv2.imshow(WINDOW_NAME, frame) #
 
